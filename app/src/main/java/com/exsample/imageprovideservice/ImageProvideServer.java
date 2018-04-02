@@ -51,11 +51,12 @@ public class ImageProvideServer implements Runnable {
         }
         return bitmap;
     }
+    private ServerSocket serversocket = null;
+
     @Override
     public void run() {
         int count = 0;
-        ServerSocket serversocket = null;
-        Socket socket;
+        Socket socket = null;
 
         try {
             while (true) {
@@ -71,13 +72,15 @@ public class ImageProvideServer implements Runnable {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
                     // ByteArrayOutputStreamに画面出力
-                    cap.compress(Bitmap.CompressFormat.PNG, 100, bos);
-                    BufferedOutputStream buf = new BufferedOutputStream(socket.getOutputStream());
+                    if (null != cap) {
+                        cap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                        BufferedOutputStream buf = new BufferedOutputStream(socket.getOutputStream());
 
-                    // ネットワークストリームに画面データ出力
-                    buf.write(bos.toByteArray());
+                        // ネットワークストリームに画面データ出力
+                        buf.write(bos.toByteArray());
 
-                    Log.d(TAG, "ImageProvideServer " + count + " " + bos.size());
+                        Log.d(TAG, "ImageProvideServer " + count + " " + bos.size());
+                    }
 
                     socket.close();
                     count++;
@@ -87,7 +90,7 @@ public class ImageProvideServer implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
+            serversocket = null;
         }
     }
 }

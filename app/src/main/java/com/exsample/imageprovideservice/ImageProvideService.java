@@ -14,9 +14,11 @@ import android.util.Log;
 public class ImageProvideService extends Service {
     final static String TAG = "ImageProvideService";
     private Thread thread;
+    private ImageProvideServer ips;
 
     public ImageProvideService()
     {
+        ips = new ImageProvideServer();
     }
 
     @Nullable
@@ -30,7 +32,7 @@ public class ImageProvideService extends Service {
         super.onCreate();
         Log.d(TAG, "onCreate");
 
-        thread = new Thread(new ImageProvideServer());
+        thread = new Thread(ips);
 
         thread.start();
     }
@@ -45,6 +47,5 @@ public class ImageProvideService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-
     }
 }
